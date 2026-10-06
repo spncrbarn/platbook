@@ -582,6 +582,59 @@ $('#tab-deals').onclick = () => show('deals');
 $('#tab-map').onclick = () => show('map');
 $('#newDeal').onclick = () => newDeal();
 
+/* =====================================================================
+   SAVE TO / LOAD FROM A FILE
+   For backups, and for handing deals to each other without a database.
+   Loading merges: new deals are added, and a deal you both have keeps
+   whichever copy was edited most recently.
+   ===================================================================== */
+$('.ledger').insertAdjacentHTML('beforeend', `<div class="ledger-foot">
+  <p class="fine">${configured ? 'Deals are shared with your team.' : 'Deals live in this browser only. Save them to a file to back up or send to Will.'}</p>
+  <div class="filebtns"><button type="button" class="btn quiet" id="exportDeals">Save to file</button><button type="button" class="btn quiet" id="importDeals">Load a file</button></div>
+  <input type="file" id="importFile" accept=".json,application/json" hidden>
+</div>`);
+
+$('#exportDeals').onclick = () => {
+  if (!deals.length) { toast('There are no deals to save yet.'); return; }
+  const stamp = new Date().toISOString().slice(0, 10);
+  const blob = new Blob([JSON.stringify({ app: 'platbook', version: 1, saved: new Date().toISOString(), deals }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = `platbook-deals-${stamp}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  toast(`Saved ${deals.length} deal${deals.length === 1 ? '' : 's'} to a file.`);
+};
+
+$('#importDeals').onclick = () => $('#importFile').click();
+$('#importFile').onchange = async e => {
+  const file = e.target.files[0]; e.target.value = '';
+  if (!file) return;
+  let incoming;
+  try {
+    const j = JSON.parse(await file.text());
+    incoming = Array.isArray(j) ? j : j.deals;
+    if (!Array.isArray(incoming)) throw new Error();
+    incoming = incoming.filter(r => r && r.id && r.data && typeof r.data === 'object');
+  } catch (err) { toast('That file isn’t a Plat Book deals file.'); return; }
+  let added = 0, updated = 0, kept = 0;
+  incoming.forEach(r => {
+    const rec = { id: String(r.id), data: blankDeal(r.data), updated_at: r.updated_at || new Date(0).toISOString() };
+    const have = deals.find(x => x.id === rec.id);
+    if (!have) { deals.push(rec); added++; pending.add(rec.id); }
+    else if (rec.updated_at > have.updated_at) { have.data = rec.data; have.updated_at = rec.updated_at; updated++; pending.add(rec.id); }
+    else kept++;
+  });
+  deals.sort((a, b) => (b.updated_at > a.updated_at ? 1 : -1));
+  if (!currentId) currentId = deals[0]?.id || null;
+  if (configured) flush(); else { saveLocal(); pending.clear(); }
+  renderLedger(); renderSheet(); drawPins();
+  const bits = [];
+  if (added) bits.push(`added ${added}`);
+  if (updated) bits.push(`updated ${updated}`);
+  if (kept) bits.push(`kept your newer copy of ${kept}`);
+  toast(bits.length ? 'Loaded: ' + bits.join(', ') + '.' : 'That file had no deals in it.');
+};
+
 function toast(t) {
   const el = $('#toast'); el.textContent = t; el.classList.add('show');
   clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('show'), 3800);
@@ -675,6 +728,10 @@ function initMap() {
 
   $('#layerList').innerHTML = `<div class="basepick" role="radiogroup" aria-label="Base map">${Object.entries(BASEMAPS).map(([k, b]) =>
       `<label><input type="radio" name="basemap" value="${k}" ${k === baseKey ? 'checked' : ''}><span>${b.label}</span></label>`).join('')}</div>` + LAYERS.map(l => `<label class="layer"><input type="checkbox" data-layer="${l.key}" ${layerOn[l.key] ? 'checked' : ''}>${l.key === 'deals' ? '<i style="background:var(--flag)"></i>' : ''}${l.label}</label>`).join('');
+  $('#layerList').insertAdjacentHTML('beforeend', `<p class="fine zoomhint" id="zoomHint" hidden>You’re zoomed out. Zoning, lot lines and plats only draw at street level. <button type="button" class="link" id="zoomIn">Zoom in here</button></p>`);
+  $('#zoomIn').onclick = () => map.setZoom(17);
+  const hint = () => { $('#zoomHint').hidden = map.getZoom() >= 16; };
+  map.on('zoomend', hint); hint();
   $$('input[name="basemap"]').forEach(r => r.onchange = () => setBase(r.value));
   $$('[data-layer]').forEach(cb => cb.onchange = () => { layerOn[cb.dataset.layer] = cb.checked; applyLayers(); });
 

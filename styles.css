@@ -68,6 +68,10 @@ a{color:var(--accent)}
 .deal-list .nm{font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .deal-list .cf{font-size:13px}
 .deal-list .meta{grid-column:2 / 4; font-size:12.5px; color:var(--muted)}
+.ledger-foot{padding:16px 18px 0}
+.ledger-foot .fine{margin:0 0 10px}
+.filebtns{display:flex; flex-wrap:wrap; gap:8px}
+.filebtns .btn{padding:6px 11px; font-size:13.5px}
 .ledger-empty{padding:0 18px; color:var(--muted); font-size:14px}
 .pos{color:var(--good)} .neg{color:var(--bad)} .thin{color:var(--warn)}
 
@@ -147,6 +151,7 @@ th{font-weight:600; color:var(--muted); font-size:13px}
 .basepick span{display:block; text-align:center; padding:6px 4px; font-size:13.5px; font-weight:600; color:var(--muted)}
 .basepick input:checked + span{background:var(--accent); color:var(--accent-ink)}
 .basepick input:focus-visible + span{outline:2px solid var(--accent); outline-offset:-2px}
+.zoomhint{margin:6px 0 0; padding:7px 9px; background:var(--accent-soft); border-radius:var(--r-sm); color:var(--ink)}
 .layer{display:flex; align-items:center; gap:9px; padding:6px 0; font-size:14px; cursor:pointer}
 .layer input{accent-color:var(--accent); width:16px; height:16px}
 .layer i{width:14px; height:10px; border-radius:2px; flex:none}
