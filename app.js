@@ -641,23 +641,41 @@ const ArcPicture = window.L ? L.Layer.extend({
   }
 }) : null;
 
-function baseUrl() {
-  const dark = document.documentElement.dataset.theme === 'dark' || (document.documentElement.dataset.theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
-  return `https://{s}.basemaps.cartocdn.com/${dark ? 'dark_all' : 'light_all'}/{z}/{x}/{y}{r}.png`;
+// Base maps that need no API key. Chosen one is remembered in this browser.
+const isDark = () => document.documentElement.dataset.theme === 'dark' || (document.documentElement.dataset.theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
+const ESRI_ATTR = 'Tiles © <a href="https://www.esri.com/">Esri</a>';
+const BASEMAPS = {
+  street: { label: 'Street', make: () => L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxNativeZoom: 19, maxZoom: 20, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }) },
+  satellite: { label: 'Satellite', make: () => L.tileLayer(ESRI + 'World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxNativeZoom: 19, maxZoom: 20, attribution: ESRI_ATTR + ', Maxar, Earthstar Geographics' }) },
+  quiet: { label: 'Quiet', make: () => L.tileLayer(ESRI + 'Canvas/' + (isDark() ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base') + '/MapServer/tile/{z}/{y}/{x}', { maxNativeZoom: 16, maxZoom: 20, attribution: ESRI_ATTR }) }
+};
+let baseKey = 'street';
+try { const saved = localStorage.getItem('platbook.basemap'); if (BASEMAPS[saved]) baseKey = saved; } catch (e) {}
+
+function setBase(key) {
+  baseKey = key;
+  if (base) map.removeLayer(base);
+  base = BASEMAPS[key].make().addTo(map);
+  base.bringToBack();
+  try { localStorage.setItem('platbook.basemap', key); } catch (e) {}
 }
 
 function initMap() {
   if (map) return;
   map = L.map('map', { zoomControl: false, attributionControl: true }).setView([35.4676, -97.5164], 12);
   L.control.zoom({ position: 'topright' }).addTo(map);
-  base = L.tileLayer(baseUrl(), { maxZoom: 20, subdomains: 'abcd', attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a> · City of OKC · FEMA' }).addTo(map);
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => base.setUrl(baseUrl()));
+  map.attributionControl.addAttribution('City of OKC, FEMA');
+  setBase(baseKey);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (baseKey === 'quiet') setBase('quiet'); });
   okcLayer = new ArcPicture(OKC, 0.62).addTo(map);
   femaLayer = new ArcPicture(FEMA, 0.5).addTo(map);
   pinGroup = L.layerGroup().addTo(map);
   applyLayers(); drawPins();
 
-  $('#layerList').innerHTML = LAYERS.map(l => `<label class="layer"><input type="checkbox" data-layer="${l.key}" ${layerOn[l.key] ? 'checked' : ''}>${l.key === 'deals' ? '<i style="background:var(--flag)"></i>' : ''}${l.label}</label>`).join('');
+  $('#layerList').innerHTML = `<div class="basepick" role="radiogroup" aria-label="Base map">${Object.entries(BASEMAPS).map(([k, b]) =>
+      `<label><input type="radio" name="basemap" value="${k}" ${k === baseKey ? 'checked' : ''}><span>${b.label}</span></label>`).join('')}</div>` + LAYERS.map(l => `<label class="layer"><input type="checkbox" data-layer="${l.key}" ${layerOn[l.key] ? 'checked' : ''}>${l.key === 'deals' ? '<i style="background:var(--flag)"></i>' : ''}${l.label}</label>`).join('');
+  $$('input[name="basemap"]').forEach(r => r.onchange = () => setBase(r.value));
   $$('[data-layer]').forEach(cb => cb.onchange = () => { layerOn[cb.dataset.layer] = cb.checked; applyLayers(); });
 
   map.on('click', e => inspect(e.latlng));

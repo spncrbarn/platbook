@@ -49,7 +49,7 @@ emails on the members list can see data even if they do.
   public map service (`gis.okc.gov`)
 - Flood zones: FEMA’s National Flood Hazard Layer (`hazards.fema.gov`)
 - Address search: OpenStreetMap’s Nominatim (fine for light use like this)
-- Base map: CARTO
+- Base maps: OpenStreetMap (Street) and Esri (Satellite, Quiet), no API keys needed
 
 If the city changes or retires its service, the map still works; that layer goes blank. The
 service addresses are at the top of the MAP section in `app.js`.
