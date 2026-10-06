@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#E8EBE6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151B1E" media="(prefers-color-scheme: dark)">
+<title>Plat Book</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Plat Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231D272C'/><path d='M7 9h18M7 16h18M7 23h18M12 6v20M21 6v20' stroke='%23E8EBE6' stroke-width='1.6'/><circle cx='21' cy='16' r='3.2' fill='%23E0457B'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand"><span class="mark" aria-hidden="true"></span><span id="appName">Plat Book</span></div>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" id="tab-deals" aria-controls="view-deals" aria-selected="true">Deals</button>
+    <button role="tab" id="tab-map" aria-controls="view-map" aria-selected="false">Map</button>
+  </nav>
+  <div class="who"><span id="syncState">Loading…</span><a href="../?home" class="about">About</a><button class="link" id="signOut" hidden>Sign out</button></div>
+</header>
+
+<!-- ======================= DEALS ======================= -->
+<main id="view-deals" class="view deals" role="tabpanel" aria-labelledby="tab-deals">
+  <aside class="ledger" aria-label="Saved deals">
+    <div class="ledger-head">
+      <h2>Deals</h2>
+      <button class="btn" id="newDeal">New deal</button>
+    </div>
+    <ol id="dealList" class="deal-list"></ol>
+    <p class="ledger-empty" id="ledgerEmpty" hidden>No deals yet. Start one here or tap a spot on the map.</p>
+  </aside>
+
+  <section class="analyzer" id="analyzer" aria-label="Deal analyzer">
+    <div class="sheet" id="sheet"><!-- filled by app.js --></div>
+  </section>
+</main>
+
+<!-- ======================= MAP ======================= -->
+<main id="view-map" class="view mapview" role="tabpanel" aria-labelledby="tab-map" hidden>
+  <div id="map" aria-label="Map of Oklahoma City"></div>
+  <div class="mappanel" id="mapPanel">
+    <form class="search" id="searchForm" role="search">
+      <label for="searchBox" class="sr">Find an address</label>
+      <input id="searchBox" type="search" placeholder="Find an address in OKC" autocomplete="off">
+      <button class="btn" type="submit">Find</button>
+    </form>
+    <ul class="results" id="searchResults" hidden></ul>
+    <details open class="layers">
+      <summary>Layers</summary>
+      <div id="layerList"></div>
+      <p class="fine">City layers show once you zoom in close. Tap anywhere on the map to see zoning and flood zone for that spot.</p>
+    </details>
+    <details class="layers">
+      <summary>Where this comes from</summary>
+      <ul class="sources">
+        <li>Zoning, lots, plats and city limits: <a href="https://data.okc.gov/" target="_blank" rel="noopener">City of Oklahoma City</a></li>
+        <li>Flood zones: <a href="https://msc.fema.gov/portal/advanceSearch" target="_blank" rel="noopener">FEMA flood map service</a></li>
+        <li>Owner, value and taxes: <a href="https://www.oklahomacounty.org/elected-offices/assessor" target="_blank" rel="noopener">Oklahoma County Assessor</a></li>
+        <li>Address search: OpenStreetMap</li>
+      </ul>
+      <p class="fine">The map is a starting point. Before you offer on anything, confirm zoning with the city and flood status with a survey or insurance quote.</p>
+    </details>
+  </div>
+</main>
+
+<!-- sign-in / messages -->
+<div class="veil" id="veil" hidden>
+  <form class="signin" id="signin" novalidate></form>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

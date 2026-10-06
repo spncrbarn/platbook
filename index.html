@@ -4,80 +4,275 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<title>Plat Book: every lot in Oklahoma City, and whether it pays</title>
+<meta name="description" content="Oklahoma City zoning, lot lines and flood zones next to a simple deal calculator. Free, no account.">
 <meta name="theme-color" content="#E8EBE6" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151B1E" media="(prefers-color-scheme: dark)">
-<title>Plat Book</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231D272C'/><path d='M7 9h18M7 16h18M7 23h18M12 6v20M21 6v20' stroke='%23E8EBE6' stroke-width='1.6'/><circle cx='21' cy='16' r='3.2' fill='%23E0457B'/></svg>">
+<link rel="icon" href="app/icons/icon-192.png">
+<link rel="apple-touch-icon" href="app/icons/apple-touch-icon.png">
+<script>
+  // Opened from a home-screen icon? Go straight to the tool.
+  (function(){
+    var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
+    if (standalone && !/[?&]home/.test(location.search)) location.replace('app/');
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="styles.css">
+<style>
+:root{
+  --bg:#E8EBE6; --paper:#FBFCFA; --ink:#1D272C; --muted:#5C6A6E; --faint:#8E9A9C; --line:#CDD4CF; --wash:#F1F3EF;
+  --accent:#2F5D50; --accent-ink:#FFFFFF; --accent-soft:#DDE8E2; --flag:#E0457B; --water:#7FA3B5;
+  --serif:"Newsreader","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  box-sizing:border-box; color-scheme:light dark;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151B1E; --paper:#1C2428; --ink:#E3E9E6; --muted:#9AA7A8; --faint:#6E7B7D; --line:#2D383C; --wash:#20292D;
+    --accent:#7FB8A4; --accent-ink:#0F1A16; --accent-soft:#233630; --flag:#F0679A; --water:#4F7384;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151B1E; --paper:#1C2428; --ink:#E3E9E6; --muted:#9AA7A8; --faint:#6E7B7D; --line:#2D383C; --wash:#20292D;
+  --accent:#7FB8A4; --accent-ink:#0F1A16; --accent-soft:#233630; --flag:#F0679A; --water:#4F7384;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth; scroll-padding-top:calc(70px + env(safe-area-inset-top,0px))}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.6 var(--sans); -webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+.wrap{max-width:1080px; margin:0 auto; padding:0 24px}
+
+header{position:sticky; top:env(safe-area-inset-top,0px); z-index:10; background:var(--bg); border-bottom:1px solid var(--line)}
+header .wrap{display:flex; align-items:center; gap:28px; height:62px}
+.brand{display:flex; align-items:center; gap:10px; font:500 22px/1 var(--serif); color:var(--ink); text-decoration:none}
+.brand img{width:26px; height:26px; border-radius:5px}
+nav{display:flex; align-items:center; gap:22px; margin-left:auto; font-size:15px}
+nav a{color:var(--muted); text-decoration:none}
+nav a:hover{color:var(--ink)}
+.btn{display:inline-block; background:var(--accent); color:var(--accent-ink); text-decoration:none; font-weight:600; padding:11px 20px; border-radius:4px; border:1px solid var(--accent)}
+header .btn{padding:7px 14px; font-size:15px}
+
+.hero{display:grid; grid-template-columns:1.05fr 1fr; gap:48px; align-items:center; padding-top:72px; padding-bottom:64px}
+h1{font:400 clamp(40px,5.4vw,62px)/1.04 var(--serif); letter-spacing:-.02em; margin:0 0 22px; max-width:14ch}
+.lede{font-size:19px; color:var(--muted); max-width:44ch; margin:0 0 28px}
+.small{font-size:14px; color:var(--muted); margin:14px 0 0}
+.plat{width:100%; height:auto; display:block}
+
+section{padding:64px 0; border-top:1px solid var(--line)}
+h2{font:400 clamp(30px,3.6vw,40px)/1.12 var(--serif); letter-spacing:-.015em; margin:0 0 12px; max-width:22ch}
+.intro{color:var(--muted); max-width:58ch; margin:0 0 36px}
+
+.steps{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3,1fr); gap:36px; counter-reset:s}
+.steps li{counter-increment:s; border-top:2px solid var(--ink); padding-top:16px}
+.steps li::before{content:counter(s); font:500 34px/1 var(--serif); display:block; margin-bottom:10px}
+.steps h3,.two h3,.dev h3{font:600 17px/1.3 var(--sans); margin:0 0 6px}
+.steps p,.two p{margin:0; color:var(--muted); font-size:16px}
+
+.two{display:grid; grid-template-columns:1fr 1fr; gap:24px}
+.two div{background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:24px 26px}
+.two .tag{font-size:14px; color:var(--accent); font-weight:600; margin:0 0 4px}
+
+.devs{display:grid; grid-template-columns:repeat(3,1fr); gap:24px}
+.dev{border-left:1px solid var(--line); padding-left:20px}
+.dev .where{font-size:14px; color:var(--muted); margin:0 0 12px}
+.dev ol{margin:0; padding-left:20px; font-size:16px}
+.dev li{margin:0 0 6px}
+.dev .alt{font-size:14px; color:var(--muted); margin:10px 0 0}
+.url{font-weight:600; word-break:break-all}
+.note{margin:32px 0 0; padding:14px 18px; background:var(--accent-soft); border-radius:4px; font-size:15px; max-width:70ch}
+
+.facts{list-style:none; margin:0; padding:0; max-width:64ch}
+.facts li{padding:14px 0; border-bottom:1px solid var(--line)}
+.facts li:first-child{border-top:1px solid var(--line)}
+.facts b{display:block; font-weight:600}
+.facts span{color:var(--muted); font-size:16px}
+
+.fine{display:grid; grid-template-columns:1fr 1fr; gap:40px; font-size:15px; color:var(--muted)}
+.fine h3{font:600 16px/1.3 var(--sans); color:var(--ink); margin:0 0 8px}
+.fine ul{margin:0; padding-left:18px}
+.fine li{margin:4px 0}
+
+.closer{padding-top:72px; padding-bottom:72px}
+.closer h2{max-width:none}
+footer{border-top:1px solid var(--line); padding:26px 0 36px; font-size:14px; color:var(--muted)}
+footer .wrap{display:flex; flex-wrap:wrap; gap:8px 24px}
+footer a{color:var(--muted)}
+
+@media (max-width:860px){
+  nav a:not(.btn){display:none}
+  .hero{grid-template-columns:1fr; padding-top:44px; padding-bottom:40px; gap:32px}
+  .steps,.devs,.two,.fine{grid-template-columns:1fr}
+  .steps{gap:28px}
+  .dev{border-left:0; padding-left:0; border-top:1px solid var(--line); padding-top:18px}
+  section{padding:48px 0}
+}
+</style>
 </head>
 <body>
 
-<header class="bar">
-  <div class="brand"><span class="mark" aria-hidden="true"></span><span id="appName">Plat Book</span></div>
-  <nav class="tabs" role="tablist" aria-label="Sections">
-    <button role="tab" id="tab-deals" aria-controls="view-deals" aria-selected="true">Deals</button>
-    <button role="tab" id="tab-map" aria-controls="view-map" aria-selected="false">Map</button>
-  </nav>
-  <div class="who"><span id="syncState">Loading…</span><button class="link" id="signOut" hidden>Sign out</button></div>
+<header>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="app/icons/icon-192.png" alt="">Plat Book</a>
+    <nav aria-label="Page">
+      <a href="#how">How it works</a>
+      <a href="#install">Install</a>
+      <a href="#deals">Your deals</a>
+      <a class="btn open" href="app/">Open Plat Book</a>
+    </nav>
+  </div>
 </header>
 
-<!-- ======================= DEALS ======================= -->
-<main id="view-deals" class="view deals" role="tabpanel" aria-labelledby="tab-deals">
-  <aside class="ledger" aria-label="Saved deals">
-    <div class="ledger-head">
-      <h2>Deals</h2>
-      <button class="btn" id="newDeal">New deal</button>
+<main id="top">
+  <div class="wrap hero">
+    <div>
+      <h1>Every lot in Oklahoma City, and whether it pays.</h1>
+      <p class="lede">Plat Book puts the city’s zoning, lot lines and flood maps next to a simple deal calculator. Tap a lot to see what it’s zoned for, then find out in a minute whether a property would pay for itself.</p>
+      <a class="btn open" href="app/">Open Plat Book</a>
+      <p class="small">Free. No account. Your deals stay on your device.</p>
     </div>
-    <ol id="dealList" class="deal-list"></ol>
-    <p class="ledger-empty" id="ledgerEmpty" hidden>No deals yet. Start one here or tap a spot on the map.</p>
-  </aside>
 
-  <section class="analyzer" id="analyzer" aria-label="Deal analyzer">
-    <div class="sheet" id="sheet"><!-- filled by app.js --></div>
+    <!-- A plat sheet: streets, lots, a creek with its flood zone, and one staked lot -->
+    <svg class="plat" viewBox="0 0 520 440" role="img" aria-label="Drawing of a plat map: city blocks divided into lots, a creek with a shaded flood zone, and one lot marked with a pink stake.">
+      <defs>
+        <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <line x1="0" y1="0" x2="0" y2="8" style="stroke:var(--water)" stroke-width="2.2" opacity=".55"/>
+        </pattern>
+      </defs>
+      <rect x="0.5" y="0.5" width="519" height="439" rx="8" style="fill:var(--paper);stroke:var(--line)"/>
+      <!-- flood zone and creek -->
+      <path d="M-10 330 C 90 300, 150 380, 260 350 S 430 300, 540 340 L540 440 L-10 440 Z" fill="url(#hatch)"/>
+      <path d="M-10 372 C 90 342, 150 422, 260 392 S 430 342, 540 382" fill="none" style="stroke:var(--water)" stroke-width="5" stroke-linecap="round"/>
+      <!-- blocks -->
+      <g style="stroke:var(--ink)" stroke-width="1.4" fill="none">
+        <rect x="34" y="34" width="200" height="120"/><rect x="286" y="34" width="200" height="120"/>
+        <rect x="34" y="190" width="200" height="110"/><rect x="286" y="190" width="200" height="110"/>
+      </g>
+      <!-- lots -->
+      <g style="stroke:var(--ink)" stroke-width=".8" opacity=".55">
+        <path d="M74 34V154M114 34V154M154 34V154M194 34V154M34 94H234"/>
+        <path d="M326 34V154M366 34V154M406 34V154M446 34V154M286 94H486"/>
+        <path d="M84 190V300M134 190V300M184 190V300M34 245H234"/>
+        <path d="M336 190V300M386 190V300M436 190V300M286 245H486"/>
+      </g>
+      <!-- the staked lot -->
+      <rect x="406.5" y="94.5" width="39" height="59" style="fill:var(--accent-soft)"/>
+      <path d="M406 94H446V154H406Z" fill="none" style="stroke:var(--ink)" stroke-width="1.4"/>
+      <g transform="translate(426 124)"><path d="M0 -15 C 9 -15 11 -6 0 6 C -11 -6 -9 -15 0 -15 Z" style="fill:var(--flag);stroke:var(--paper)" stroke-width="2"/><circle cx="0" cy="-8" r="3" style="fill:var(--paper)"/></g>
+      <!-- zoning labels -->
+      <g style="fill:var(--muted);font:500 13px var(--sans)">
+        <text x="44" y="56">R-1</text><text x="296" y="56">R-2</text><text x="44" y="212">R-1</text><text x="296" y="212">C-3</text>
+      </g>
+      <g style="fill:var(--muted);font:italic 400 14px var(--serif)">
+        <text x="134" y="177" text-anchor="middle">NW 16th St</text>
+        <text x="260" y="104" text-anchor="middle" transform="rotate(-90 260 104)">Blackwelder Ave</text>
+      </g>
+    </svg>
+  </div>
+
+  <section id="how">
+    <div class="wrap">
+      <h2>From a lot to a decision in three steps.</h2>
+      <p class="intro">Most of what you need to size up a property is public, but it’s scattered across city, county and federal websites. Plat Book gathers it in one calm place and does the math for you.</p>
+      <ol class="steps">
+        <li><h3>Find a spot</h3><p>Search an address or tap any lot. You’ll see its zoning and flood zone, straight from the City of Oklahoma City and FEMA, over a street, satellite or plain map.</p></li>
+        <li><h3>Run the numbers</h3><p>Enter the price and what it would rent for. Plat Book tells you in one sentence whether it pays for itself, and what rent or price would make it work if it doesn’t.</p></li>
+        <li><h3>Keep your list</h3><p>Save every property you look at and mark where it stands, from watching to owned. Your deals show up as pins, so you can see your whole search on one map.</p></li>
+      </ol>
+    </div>
   </section>
-</main>
 
-<!-- ======================= MAP ======================= -->
-<main id="view-map" class="view mapview" role="tabpanel" aria-labelledby="tab-map" hidden>
-  <div id="map" aria-label="Map of Oklahoma City"></div>
-  <div class="mappanel" id="mapPanel">
-    <form class="search" id="searchForm" role="search">
-      <label for="searchBox" class="sr">Find an address</label>
-      <input id="searchBox" type="search" placeholder="Find an address in OKC" autocomplete="off">
-      <button class="btn" type="submit">Find</button>
-    </form>
-    <ul class="results" id="searchResults" hidden></ul>
-    <details open class="layers">
-      <summary>Layers</summary>
-      <div id="layerList"></div>
-      <p class="fine">City layers show once you zoom in close. Tap anywhere on the map to see zoning and flood zone for that spot.</p>
-    </details>
-    <details class="layers">
-      <summary>Where this comes from</summary>
-      <ul class="sources">
-        <li>Zoning, lots, plats and city limits: <a href="https://data.okc.gov/" target="_blank" rel="noopener">City of Oklahoma City</a></li>
-        <li>Flood zones: <a href="https://msc.fema.gov/portal/advanceSearch" target="_blank" rel="noopener">FEMA flood map service</a></li>
-        <li>Owner, value and taxes: <a href="https://www.oklahomacounty.org/elected-offices/assessor" target="_blank" rel="noopener">Oklahoma County Assessor</a></li>
-        <li>Address search: OpenStreetMap</li>
+  <section>
+    <div class="wrap">
+      <h2>Two ways to buy your first place.</h2>
+      <p class="intro">Switch any deal between them and the numbers rework themselves.</p>
+      <div class="two">
+        <div><p class="tag">Rent it out</p><h3>Buy a house or small building and lease every unit.</h3><p>See monthly cash flow after every cost, your yearly return on the cash you put in, and how it holds up if rents drop, rates rise or a unit sits empty.</p></div>
+        <div><p class="tag">Live in one unit</p><h3>Buy a duplex to fourplex, live in one unit, rent the rest.</h3><p>See what it costs you to live there compared with your rent today, and what the building earns once you move out. Owner-occupied loans can need as little as 3.5% down.</p></div>
+      </div>
+      <p class="small" style="margin-top:20px">Every number comes with a plain-English explanation. Tap the question mark next to it.</p>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap">
+      <h2>Put it on your home screen.</h2>
+      <p class="intro">Plat Book installs straight from your browser, no app store needed. You get an icon, and it opens full screen like any other app.</p>
+      <div class="devs">
+        <div class="dev">
+          <h3>iPhone and iPad</h3><p class="where">In Safari</p>
+          <ol><li>Open <span class="url here">this site/app</span></li><li>Tap the Share button</li><li>Scroll down, tap <b>Add to Home Screen</b>, then <b>Add</b></li></ol>
+          <p class="alt">Using Chrome on iPhone? Tap Share in the address bar, then Add to Home Screen.</p>
+        </div>
+        <div class="dev">
+          <h3>Android</h3><p class="where">In Chrome</p>
+          <ol><li>Open <span class="url here">this site/app</span></li><li>Tap the menu ⋮ at the top right</li><li>Tap <b>Install app</b> or <b>Add to Home screen</b></li></ol>
+        </div>
+        <div class="dev">
+          <h3>Mac and PC</h3><p class="where">In Chrome, Edge or Safari</p>
+          <ol><li>Open <span class="url here">this site/app</span></li><li>Chrome or Edge: click the install icon at the right end of the address bar</li><li>Safari on Mac: choose <b>File → Add to Dock</b></li></ol>
+        </div>
+      </div>
+      <p class="note">Add it from the app itself, not this page, so the icon opens straight to your deals.</p>
+    </div>
+  </section>
+
+  <section id="deals">
+    <div class="wrap">
+      <h2>Your deals stay with you.</h2>
+      <p class="intro">There’s no account and no server holding your numbers. Here’s what that means in practice.</p>
+      <ul class="facts">
+        <li><b>Deals save in your browser</b><span>Nothing you type is sent anywhere. The map asks public city and federal servers for map pictures, and that’s all.</span></li>
+        <li><b>Save to a file to back up or share</b><span>One tap downloads every deal as a small file. Text it to a partner, or keep it somewhere safe.</span></li>
+        <li><b>Load a file to combine lists</b><span>New deals are added. If you both have the same deal, the copy edited most recently wins.</span></li>
+        <li><b>Clearing your browser erases them</b><span>Save a file before clearing history or switching browsers.</span></li>
       </ul>
-      <p class="fine">The map is a starting point. Before you offer on anything, confirm zoning with the city and flood status with a survey or insurance quote.</p>
-    </details>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap fine">
+      <div>
+        <h3>Where the map comes from</h3>
+        <ul>
+          <li>Zoning, overlays, lot lines, plats, the planokc land use plan and city limits: <a href="https://data.okc.gov/">City of Oklahoma City</a></li>
+          <li>Flood zones: <a href="https://msc.fema.gov/portal/advanceSearch">FEMA National Flood Hazard Layer</a></li>
+          <li>Owner, value and taxes: <a href="https://www.oklahomacounty.org/elected-offices/assessor">Oklahoma County Assessor</a></li>
+          <li>Street map: OpenStreetMap. Satellite and plain maps: Esri.</li>
+        </ul>
+        <p>Zoning and lot lines appear once you zoom in to street level.</p>
+      </div>
+      <div>
+        <h3>Arithmetic, not advice</h3>
+        <p>Plat Book calculates from the numbers you enter. It isn’t financial, legal or tax advice, and its starting numbers are only examples. Before you make an offer, get a real rate from a lender, a real insurance quote and the actual tax bill, and confirm zoning with the city and flood status with a survey.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap closer">
+    <h2>Pick a street you know and start there.</h2>
+    <p class="intro">Tap a lot, run the numbers, and see what you learn.</p>
+    <a class="btn open" href="app/">Open Plat Book</a>
   </div>
 </main>
 
-<!-- sign-in / messages -->
-<div class="veil" id="veil" hidden>
-  <form class="signin" id="signin" novalidate></form>
-</div>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<footer>
+  <div class="wrap"><span>Plat Book, made in Oklahoma City</span><a href="app/">Open the app</a><a href="#install">Install</a><a href="#deals">Your deals</a></div>
+</footer>
 
-<script src="config.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
-<script src="app.js"></script>
+<script>
+  // Show the real address in the install steps.
+  var appUrl = (location.host + location.pathname.replace(/index\.html$/, '')).replace(/\/?$/, '/') + 'app';
+  document.querySelectorAll('.here').forEach(function (el) { el.textContent = appUrl; });
+  // Returning? Change the buttons to point you back to your deals.
+  try {
+    var saved = JSON.parse(localStorage.getItem('platbook.deals.v1') || '[]');
+    if (saved.length) document.querySelectorAll('.open').forEach(function (a) { a.textContent = 'Open your deals'; });
+  } catch (e) {}
+</script>
 </body>
 </html>

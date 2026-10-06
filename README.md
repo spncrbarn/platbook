@@ -3,16 +3,19 @@
 A private deal analyzer and Oklahoma City map for two partners. Same setup as opentime:
 plain HTML/CSS/JS on GitHub Pages, with Supabase handling sign-in and shared storage.
 
-- `index.html`: the page
-- `styles.css`: colors, type and layout (colors are the variables at the top)
-- `app.js`: the math, saving, sign-in and the map, each in a labeled section
-- `config.js`: your settings (app name, Supabase keys)
-- `supabase/setup.sql`: the database and its security rules
+- `index.html`: the welcome page (what it is, how to install it)
+- `app/`: the tool itself
+  - `index.html`: the page
+  - `styles.css`: colors, type and layout (colors are the variables at the top)
+  - `app.js`: the math, saving, sign-in and the map, each in a labeled section
+  - `config.js`: your settings (app name, Supabase keys)
+  - `manifest.webmanifest` and `icons/`: what makes it installable as a home-screen app
+- `supabase/setup.sql`: optional shared database and its security rules
 
 ## 1. Try it right now (2 minutes)
 
 Push this folder to a GitHub repo and turn on Pages (step 3), or just open it with any local
-server. With `config.js` left blank, it runs in "this device only" mode: everything saves in
+server. With `app/config.js` left blank, it runs in "this device only" mode: everything saves in
 your browser. Good for playing with numbers before Will has an account.
 
 ## 2. Make it private and shared (15 minutes)
@@ -29,7 +32,7 @@ your browser. Good for playing with numbers before Will has an account.
 5. **Authentication → URL Configuration**: set Site URL to your site’s address so password
    reset emails link back correctly.
 6. **Project Settings → API**: copy the Project URL and the anon (or “publishable”) key into
-   `config.js`. Both are safe to publish. The rules in `setup.sql` are what protect your data:
+   `app/config.js`. Both are safe to publish. The rules in `setup.sql` are what protect your data:
    only emails on the members list can read or change anything.
 
 Three locks, in order: no one can sign up, only the accounts you created can sign in, and only

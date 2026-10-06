@@ -1,0 +1,18 @@
+{
+  "id": "./",
+  "name": "Plat Book",
+  "short_name": "Plat Book",
+  "description": "A deal analyzer and Oklahoma City map: zoning, flood zones and lot lines, plus whether a property pays for itself.",
+  "lang": "en",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#E8EBE6",
+  "theme_color": "#E8EBE6",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
